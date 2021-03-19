@@ -1,0 +1,42 @@
+--- 
+- name : Installing mandatory stacks
+  hosts: default
+  become: true
+  tasks: 
+    - name: "Install Nginx"
+      apt: 
+        name: nginx
+        state: latest
+    - name: "Configure nginx"
+      block:
+      - name: "Deploy server cong"
+        copy:
+          src: ./mega
+          dest: /etc/nginx/sites-available
+          owner: root
+          group: root
+          mode: 0644
+      - name: "Create mega web folder"
+        file:
+          path: /var/www/html/mega
+          state: directory
+          mode: 0755
+      - name: "Deploy front files"
+        copy:
+          src: "{{ item }}"
+          dest: /var/www/html/mega
+          owner: root
+          group: root
+          mode: 0644
+        with_items:
+          - ./mega.png
+          - ./index.html
+      - name: "Delete default server conf "
+        file:
+          path: /etc/nginx/sites-enabled/default
+          state: absent
+      - name: "Enable mega server conf"
+        file:
+          src: /etc/nginx/sites-available/mega
+          dest: /etc/nginx/sites-enabled/mega
+          state: link

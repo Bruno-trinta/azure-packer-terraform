@@ -1,0 +1,46 @@
+{
+  "builders": [{
+    "type": "azure-arm",
+    "client_id": "ef83a9d7-0943-4fd7-a206-91e35ec4ca89",
+    "client_secret": "u9DfvAntyFX-Y.~QViy6eGzRwecyotVQ~u",
+    "tenant_id": "152e4c75-3657-4284-bb2c-0d825873d72b",
+    "subscription_id": "088de0df-dacc-46b9-8e67-f92a2004e935",
+
+    "managed_image_resource_group_name": "MegaResourceGroup",
+    "managed_image_name": "MegaHttpServer",
+
+    "os_type": "Linux",
+    "image_publisher": "Canonical",
+    "image_offer": "UbuntuServer",
+    "image_sku": "16.04-LTS",
+
+    "location": "West Europe",
+    "vm_size": "Standard_B1ls",
+
+    "ssh_username": "packer"
+  }],
+  "provisioners": [{
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+    "inline": [
+      "apt-get update",
+      "apt-get upgrade -y"
+
+    ],
+    "inline_shebang": "/bin/sh -x",
+    "type": "shell"
+  },
+  {
+    "type": "ansible",
+    "playbook_file": "./nginx-install-playbook.yml",
+    "user": "packer",
+    "extra_arguments": [ "-vvvv", "--extra-vars", "ansible_remote_tmp=/tmp ansible_ssh_transfer_method=scp" ]
+  },
+  {
+    "inline": [
+      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+    ],
+    "inline_shebang": "/bin/sh -x",
+    "type": "shell"
+  }
+] 
+}
