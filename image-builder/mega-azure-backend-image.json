@@ -1,10 +1,16 @@
 {
+  "variables": {
+    "client_id": "{{env `AZR_CLIENT_ID`}}",
+    "client_secret": "{{env `AZR_CLIENT_SECRET`}}",
+    "tenant_id": "{{env `AZR_TENANT_ID`}}",
+    "subscription_id": "{{env `AZR_SUBSCRIPTION_ID`}}"
+  },
   "builders": [{
     "type": "azure-arm",
-    "client_id": "ef83a9d7-0943-4fd7-a206-91e35ec4ca89",
-    "client_secret": "u9DfvAntyFX-Y.~QViy6eGzRwecyotVQ~u",
-    "tenant_id": "152e4c75-3657-4284-bb2c-0d825873d72b",
-    "subscription_id": "088de0df-dacc-46b9-8e67-f92a2004e935",
+    "client_id": "{{user `client_id`}}",
+    "client_secret": "{{user `client_secret`}}",
+    "tenant_id": "{{user `tenant_id`}}",
+    "subscription_id": "{{user `subscription_id`}}",
 
     "managed_image_resource_group_name": "MegaResourceGroup",
     "managed_image_name": "MegaHttpServer",
